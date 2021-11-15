@@ -16,12 +16,14 @@ import 'save_as/save_as.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-      options: const FirebaseOptions(
-    apiKey: 'AIzaSyAHAsf51D0A407EklG1bs-5wA7EbyfNFg0',
-    appId: '1:448618578101:ios:2bc5c1fe2ec336f8ac3efc',
-    messagingSenderId: '448618578101',
-    projectId: 'react-native-firebase-testing',
-  ));
+    options: const FirebaseOptions(
+      apiKey: 'AIzaSyAHAsf51D0A407EklG1bs-5wA7EbyfNFg0',
+      appId: '1:448618578101:ios:2bc5c1fe2ec336f8ac3efc',
+      messagingSenderId: '448618578101',
+      projectId: 'react-native-firebase-testing',
+      storageBucket: 'react-native-firebase-testing.appspot.com',
+    ),
+  );
   runApp(StorageExampleApp());
 }
 
@@ -69,7 +71,7 @@ class _TaskManager extends State<TaskManager> {
   List<firebase_storage.UploadTask> _uploadTasks = [];
 
   /// The user selects a file, and the task is added to the list.
-  Future<firebase_storage.UploadTask> uploadFile(PickedFile file) async {
+  Future<firebase_storage.UploadTask> uploadFile(XFile file) async {
     if (file == null) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('No file was selected'),
@@ -125,8 +127,7 @@ class _TaskManager extends State<TaskManager> {
         });
         break;
       case UploadType.file:
-        PickedFile file =
-            await ImagePicker().getImage(source: ImageSource.gallery);
+        final file = await ImagePicker().pickImage(source: ImageSource.gallery);
         firebase_storage.UploadTask task = await uploadFile(file);
         if (task != null) {
           setState(() {
@@ -182,7 +183,7 @@ class _TaskManager extends State<TaskManager> {
         content: Text(
           'Success!\n Downloaded ${ref.name} \n from bucket: ${ref.bucket}\n '
           'at path: ${ref.fullPath} \n'
-          'Wrote "${ref.fullPath}" to tmp-${ref.name}.txt',
+          'Wrote "${ref.fullPath}" to tmp-${ref.name}',
         ),
       ),
     );
